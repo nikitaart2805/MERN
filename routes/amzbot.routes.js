@@ -16,7 +16,7 @@ let time = function interClean (){
 
   })}
 time()
-router.post('/Offer',time, auth, async (req, res) => {
+router.post('/Offer', auth, async (req, res) => {
   try {
 
     UserID = req.user.userId
@@ -45,6 +45,7 @@ router.post('/Offer',time, auth, async (req, res) => {
             .then((res) => {
               // rate = res.data.offerList[0].rateInfo.projectedTips
               //     offerlist = res.data
+             console.log(res.data.offerList)
               for (var Offersnumers = 0; Offersnumers < res.data.offerList.length; Offersnumers++) {
                 offerId = res.data.offerList[Offersnumers].offerId;
                 Area = res.data.offerList[Offersnumers].serviceAreaId;
