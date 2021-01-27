@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "Mern stack",
   "main": "app.js",
+
   "scripts": {
     "start": "node app.js",
-    "server": "nodemon app.js",
+    "server": "nodemon app.js --ignore client",
     "client": "npm run start --prefix client",
     "client:install": "npm install --prefix client",
     "client:build": "npm run build --prefix client",
