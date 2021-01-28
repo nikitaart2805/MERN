@@ -100,8 +100,7 @@ router.post(
                 }
               },
               user_context_map: {
-                  "frc": "AE6+q2dGLMpcIuEZgxnwylYwVkavmtW9uWhN7XRtDRT07bYzC0DU1siOez10kDY9jgZK4j0kV5HMe\/9hBVIE8z+tp4HkJENXX2MD+YUhDjtzk42mtFkCwCHdyAE5uYwDXOmb4plcDoAt6AN8p\/BS+wlgihieEoBvzobLmnMKY9KDGZHPyhb\/TRs0rh0jEe+ImK2fPAx1lb58vQirhZYDTQlmvoKyezYYlbT2Yclikz30rmHCXj95CEqop0ysf1FwHko14f5RmXuiRjpCec8pHzM6ymAuYaJwdiMsWzQnn+wqvR\/7BVaqQRlEghGpezCFxclNnpZZlCgp8snsNHKgEKd1lAJpw5ebZ\/KNZuYprBRGCpBypggrKpMrUTPh6X3EgXQ4I2zGa8mbMwpYO+5K9SQ6k1SbAd3nAg=="           },
-              requested_token_type: ["bearer", "mac_dms", "website_cookies"]
+                  "frc": "AE6+q2dGLMpcIuEZgxnwylYwVkavmtW9uWhN7XRtDRT07bYzC0DU1siOez10kDY9jgZK4j0kV5HMe\/9hBVIE8z+tp4HkJENXX2MD+YUhDjtzk42mtFkCwCHdyAE5uYwDXOmb4plcDoAt6AN8p\/BS+wlgihieEoBvzobLmnMKY9KDGZHPyhb\/TRs0rh0jEe+ImK2fPAx1lb58vQirhZYDTQlmvoKyezYYlbT2Yclikz30rmHCXj95CEqop0ysf1FwHko14f5RmXuiRjpCec8pHzM6ymAuYaJwdiMsWzQnn+wqvR\/7BVaqQRlEghGpezCFxclNnpZZlCgp8snsNHKgEKd1lAJpw5ebZ\/KNZuYprBRGCpBypggrKpMrUTPh6X3EgXQ4I2zGa8mbMwpYO+5K9SQ6k1SbAd3nAg=="         },              requested_token_type: ["bearer", "mac_dms", "website_cookies"]
             })
                 .then(res => {
                   const SignToken = res.data.response.success.tokens.bearer.access_token;
