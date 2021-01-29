@@ -8,13 +8,9 @@ const router = Router()
 let norm1 = "e6f6690b-89fd-41db-b8f8-30c1861f67d";
 let norm2 = "45ba0762-d282-445a-8901-9f62363eaac5";
 let norm3 = "a1e95b9a-9f11-476d-9af8-41677b64c255";
-let status = 2
+let status = true
 async function time () {
-    router.post('/stop', async () => {
-        status = status+1
 
-
-})
 
 }
 
@@ -26,14 +22,14 @@ router.post('/Offer', auth, async (req,res) => {
     console.log(UserID)
 
     User.findById(UserID, function (err, docs) {
-      const OurToken = docs.amztoken
+        const OurToken = docs.amztoken
 
 
         console.log(status)
 
       function intervalFunc() {
 
-
+        console.log(status)
           var start = now()
 
           axios
@@ -87,7 +83,11 @@ router.post('/Offer', auth, async (req,res) => {
           //         console.error(error)
           //     }
           // )
-
+          console.log(status)
+          if (status == false) {
+                status = true
+              clearInterval(refreshIntervalId);
+          }
 
           var end = now()
           console.log((start - end).toFixed(6))
@@ -95,9 +95,13 @@ router.post('/Offer', auth, async (req,res) => {
 
       }
 
+        var refreshIntervalId =  setInterval(intervalFunc, 300);
+        router.post('' +
+            '/stop', async () => {
+            status = false
 
-      var refreshIntervalId =  setInterval(intervalFunc, 300);
-      console.log(status)
+        })
+
 
 
     });

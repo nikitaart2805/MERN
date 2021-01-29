@@ -1,6 +1,6 @@
 //Подключени библиотек
 const {Router} =require('express')
-const User = require('../models/User')
+const User = require('../models/user')
 const AMZ = require('../models/grabber')
 const jwt = require('jsonwebtoken')
 const router   = Router()
