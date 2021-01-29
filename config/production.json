@@ -1,5 +1,5 @@
 {
-  "port": 5000,
+  "port": 8080,
   "jwtSecret": "Xyi jui",
   "mongoUri": "mongodb+srv://Mikita:Gomer6723340@flex.shaji.mongodb.net/FLEX?retryWrites=true&w=majority",
   "baseUrl": "http://localhost:5000"
