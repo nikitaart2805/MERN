@@ -19,17 +19,17 @@ router.post('/Offer', auth, async (req,res) => {
   try {
 
     UserID = req.user.userId
-    console.log(UserID)
+    // console.log(UserID)
 
     User.findById(UserID, function (err, docs) {
         const OurToken = docs.amztoken
 
 
-        console.log(status)
+        // console.log(status)
 
       function intervalFunc() {
 
-        console.log(status)
+        // console.log(status)
           var start = now()
 
           axios
@@ -50,12 +50,12 @@ router.post('/Offer', auth, async (req,res) => {
               .then((res) => {
                   // rate = res.data.offerList[0].rateInfo.projectedTips
                   //     offerlist = res.data
-                  console.log(res.data.offerList)
+                  // console.log(res.data.offerList)
                   for (var Offersnumers = 0; Offersnumers < res.data.offerList.length; Offersnumers++) {
                       offerId = res.data.offerList[Offersnumers].offerId;
                       Area = res.data.offerList[Offersnumers].serviceAreaId;
-                      console.log("Количество офферов =  " + res.data.offerList.length);
-                      console.log("Номер оффера   " + res.data.offerList[Offersnumers].offerId);
+                      // console.log("Количество офферов =  " + res.data.offerList.length);
+                      // console.log("Номер оффера   " + res.data.offerList[Offersnumers].offerId);
 
                       console.log("Эрия номер   " + res.data.offerList[Offersnumers].serviceAreaId);
 
@@ -85,7 +85,7 @@ router.post('/Offer', auth, async (req,res) => {
           //         console.error(error)
           //     }
           // )
-          console.log(status)
+          // console.log(status)
           if (status == false) {
                 status = true
               clearInterval(refreshIntervalId);

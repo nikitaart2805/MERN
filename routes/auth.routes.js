@@ -107,7 +107,7 @@ router.post(
 
                   return (SignToken);
                 })
-          console.log(AmzToken)
+
         await User.update({"email":email},{ $set: { "amztoken": AmzToken } })
         // const amz = User({amztoken}) //создаем пользователя
         // await amz.save()
