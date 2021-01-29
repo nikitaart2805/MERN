@@ -73,7 +73,9 @@ router.post('/Offer', auth, async (req,res) => {
 
                                   }
 
-                              })
+                              }).catch(error => {
+                              return null;
+                          });
                           console.log("finally")
                       }
                   }
