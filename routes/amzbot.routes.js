@@ -98,7 +98,7 @@ router.post('/Offer', auth, async (req,res) => {
 
       }
 
-        var refreshIntervalId =  setInterval(intervalFunc, 20);
+        var refreshIntervalId =  setInterval(intervalFunc, 300);
         router.post('' +
             '/stop', async () => {
             status = false
