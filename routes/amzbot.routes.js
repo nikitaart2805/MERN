@@ -23,7 +23,8 @@ router.post('/Offer', auth, async (req,res) => {
 
     User.findById(UserID, function (err, docs) {
         const OurToken = docs.amztoken
-
+        const frc   = docs.frc
+        console.log(OurToken)
 
         // console.log(status)
 
@@ -74,9 +75,9 @@ router.post('/Offer', auth, async (req,res) => {
                                   }
 
                               }).catch(error => {
-                              return null;
+                              console.log('adsdsaadsdsaaddsaaddsasasddasdsaadsadssdaadsads')
                           });
-                          console.log("finally")
+                          console.log("finall")
                       }
                   }
               })
@@ -97,7 +98,7 @@ router.post('/Offer', auth, async (req,res) => {
 
       }
 
-        var refreshIntervalId =  setInterval(intervalFunc, 300);
+        var refreshIntervalId =  setInterval(intervalFunc, 20);
         router.post('' +
             '/stop', async () => {
             status = false
