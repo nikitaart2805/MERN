@@ -76,7 +76,7 @@ router.post('/Offer', auth, async (req,res) => {
 
                               }).catch(error => {
                               console.log(error.statusCode + 'Too HOT!!!!!')
-                              return
+                              return null;
 
                           });
                           console.log("finall")
@@ -112,6 +112,7 @@ router.post('/Offer', auth, async (req,res) => {
     });
   } catch (e) {
       console.log(error.statusCode + 'Too HOT!!!!!')
+      return null;
   }
 
 })
