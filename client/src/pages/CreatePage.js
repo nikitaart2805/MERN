@@ -45,6 +45,44 @@ export const CreatePage = () => {
   return (
       <div className="row">
         <div className="col s8 offset-s2" style={{paddingTop: '2rem'}}>
+          <form action="#">
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span>Area1</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span>Area2</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span>Area3</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span>Area4</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span>Area5</span>
+              </label>
+            </p>
+
+              <label>
+                <input type="checkbox" disabled="disabled"/>
+                <span>Brown</span>
+              </label>
+
+          </form>
           <div className="input-field">
             <button
                 className="btn red darken-4"

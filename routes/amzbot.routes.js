@@ -75,7 +75,7 @@ router.post('/Offer', auth, async (req,res) => {
                                   }
 
                               }).catch(error => {
-                              console.log(error)
+                              console.log(error.statusCode + 'Too HOT!!!!!')
                               return
 
                           });
