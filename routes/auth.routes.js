@@ -37,7 +37,9 @@ router.post(    //обработка запроса пост
         const amztoken = ""
           const frc = ""
           const SN = ""
-        const user = new User({email,password: hashedPassword ,amztoken,frc,SN}) //создаем пользователя
+          const area = ""
+          const refreshtoken = ""
+        const user = new User({email,password: hashedPassword ,amztoken,frc,SN,area,refreshtoken}) //создаем пользователя
         await user.save() // сохраняем в базе
         res.status(201).json({ message: 'Пользователь создан'}) // результат в случае успеха
       }
@@ -56,75 +58,122 @@ router.post(
 
       try {
 
-        const  errors = validationResult(req) // забираем все ошибки валидации
-        if (!errors.isEmpty()){ // в случае ошибки заканчиваем функцию и выводим приведенный массив ошибок и сообшение
-          return res.status(400).json({
-            errors : errors.array(),
-            message: 'Uncorect Email'
-          })
-        }
-        const {email, password} =req.body
-        const user = await User.findOne({email})
-        if(!user){
-          return res.status(400).json({ message: 'Пользователь не найден '})
-        }
-        const isMatch = await bcrypt.compare(password, user.password)
-        if(!isMatch) {
-          return res.status(400).json({ message: 'Неверный пароль'})
-        }
-        UserID = user.id
-       PrevFrc = await User.findById(UserID, function (err, docs) {
-           FRC =docs
+          const errors = validationResult(req) // забираем все ошибки валидации
+          if (!errors.isEmpty()) { // в случае ошибки заканчиваем функцию и выводим приведенный массив ошибок и сообшение
+              return res.status(400).json({
+                  errors: errors.array(),
+                  message: 'Uncorect Email'
+              })
+          }
+          const {email, password} = req.body
+          const user = await User.findOne({email})
+          if (!user) {
+              return res.status(400).json({message: 'Пользователь не найден '})
+          }
+          const isMatch = await bcrypt.compare(password, user.password)
+          if (!isMatch) {
+              return res.status(400).json({message: 'Неверный пароль'})
+          }
+          UserID = user.id
+          PrevFrc = await User.findById(UserID, function (err, docs) {
+              FRC = docs
               return FRC
           })
           let frc = PrevFrc.frc
           let serial = PrevFrc.SN
+          let optionalamztoken = PrevFrc.amztoken
+          let optionalrefreshtoken = PrevFrc.refreshtoken
+          const token = jwt.sign(
+              {userId: user.id},
+              config.get('jwtSecret'),
+              {expiresIn: '1h'}
+          )
+          if (optionalamztoken == "") {
+              const TemporaryTokens =
+                  await axios.post('https://api.amazon.com/auth/register', {
+                      requested_extensions: ["device_info", "customer_info"],
+                      cookies: {
+                          "website_cookies": [],
+                          "domain": ".amazon.com"
+                      },
+                      registration_data: {
+                          "domain": "Device",
+                          "app_version": "0.0",
+                          "device_type": `A3NWHXTQ4EBCZS`,
+                          "os_version": "14.0.1",
+                          "device_serial": `${serial}`,
+                          "device_model": "iPhone",
+                          "app_name": "Amazon Flex",
+                          "software_version": "1"
+                      },
+                      auth_data: {
+                          user_id_password: {
+                              "user_id": `${email}`,
+                              "password": `${password}`
+                          }
+                      },
+                      "user_context_map": {
+                          "frc": `${frc}`
+                      },
+                      requested_token_type: ["bearer", "mac_dms", "website_cookies"]
+                  })
+                      .then(res => {
+                          const SignToken = res.data.response.success.tokens.bearer.access_token;
+                          const REFRESH = res.data.response.success.tokens.bearer.refresh_token;
+                          return ([SignToken, REFRESH]);
+                      })
+              let AmzToken = TemporaryTokens[0]
+              const refreshtoken = TemporaryTokens[1]
+              const area =
+                  await axios.get('https://flex-capacity-na.amazon.com/eligibleServiceAreas', {
+                      headers: {
+                          "Accept": ":application/json",
+                          "x-amz-access-token": `${AmzToken}`
+                      }
+                  })
+                      .then(res => {
+                          const AREA = res.data.serviceAreaIds[0];
+                          return (AREA);
+                      })
+              console.log(area)
+              await User.update({"email": email}, {
+                  $set: {
+                      "amztoken": AmzToken,
+                      "area": area,
+                      "refreshtoken": refreshtoken
+                  }
+              })
+              // const amz = User({amztoken}) //создаем пользователя
+              // await amz.save()
+              // console.log(AmzToken)
+              res.json({AmzToken, token, userId: user.id})
+          }
+          else {
+           let Amztoken =  await axios.post('https://api.amazon.com/auth/register', {
 
-        const token = jwt.sign(
-            { userId:user.id },
-            config.get('jwtSecret'),
-            { expiresIn: '1h'}
+                  source_token: `${optionalrefreshtoken}`,
+                  source_token_type : "refresh_token",
+                  requested_token_type: "access_token",
+                  app_name: "com.amazon.rabbit"
 
-        )
-        const AmzToken =
-            await  axios.post('https://api.amazon.com/auth/register', {
-              requested_extensions: ["device_info", "customer_info"],
-              cookies: {
-                "website_cookies": [],
-                "domain": ".amazon.com"
-              },
-              registration_data: {
-                "domain": "Device",
-                "app_version": "0.0",
-                "device_type": `A3NWHXTQ4EBCZS`,
-                "os_version": "14.0.1",
-                "device_serial": `${serial}`,
-                "device_model": "iPhone",
-                "app_name": "Amazon Flex",
-                "software_version": "1"
-              },
-              auth_data: {
-                user_id_password: {
-                  "user_id": `${email}`,
-                  "password": `${password}`
-                }
-              },
-                "user_context_map": {
-                    "frc" : `${frc}`   },
-                requested_token_type: ["bearer", "mac_dms", "website_cookies"]
-            })
-                .then(res => {
-                  const SignToken = res.data.response.success.tokens.bearer.access_token;
 
-                  return (SignToken);
-                })
 
-        await User.update({"email":email},{ $set: { "amztoken": AmzToken } })
-        // const amz = User({amztoken}) //создаем пользователя
-        // await amz.save()
-        // console.log(AmzToken)
-        res.json({ AmzToken, token , userId: user.id })
+              })
+                  .then(res => {
+                      const refreshtoken = res.data.access_token;
+                      return (refreshtoken);
+                  })
+              await User.update({"email": email}, {
+                  $set: {
+                      "amztoken": AmzToken,
+                      "refreshtoken": optionalrefreshtoken
+                  }
+              })
+          }
       }
+
+
+
       catch (e) {
         console.log(e)
         res.status(500).json({messege: 'Something going wrong'})

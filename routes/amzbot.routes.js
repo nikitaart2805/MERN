@@ -23,20 +23,20 @@ router.post('/Offer', auth, async (req,res) => {
 
     User.findById(UserID, function (err, docs) {
         const OurToken = docs.amztoken
-        const frc   = docs.frc
-        console.log(OurToken)
+        const area   = docs.area
+        console.log(area)
 
         // console.log(status)
 
       function intervalFunc() {
 
-        // console.log(status)
+
           var start = now()
 
           axios
               .post('https://flex-capacity-na.amazon.com/GetOffersForProviderPost', {
                   "apiVersion": "V2",
-                  "serviceAreaIds": ["fb0a94fe-a1b8-448e-bd95-9f3d91615574"]
+                  "serviceAreaIds":[`${area}`]
               }, {
                   headers: {
                       "Accept": ":application/json",
@@ -75,7 +75,9 @@ router.post('/Offer', auth, async (req,res) => {
                                   }
 
                               }).catch(error => {
-                              console.log('adsdsaadsdsaaddsaaddsasasddasdsaadsadssdaadsads')
+                              console.log(error)
+                              return
+
                           });
                           console.log("finall")
                       }

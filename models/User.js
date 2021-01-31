@@ -6,6 +6,8 @@ const schema = new Schema({
   amztoken: {type: String, required: false},
   frc: {type:String, required:false},
   SN : {type:String, required:false},
+  area : {type:String, required:false},
+  refreshtoken :{type:String, required:false}
 })
 
 module.exports = model('User', schema)
