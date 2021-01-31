@@ -111,7 +111,7 @@ router.post('/Offer', auth, async (req,res) => {
 
     });
   } catch (e) {
-    res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+      console.log(error.statusCode + 'Too HOT!!!!!')
   }
 
 })
