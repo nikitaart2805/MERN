@@ -41,7 +41,7 @@ router.post(    //обработка запроса пост
           const refreshtoken = ""
         const user = new User({email,password: hashedPassword ,amztoken,frc,SN,area,refreshtoken}) //создаем пользователя
         await user.save() // сохраняем в базе
-        res.status(201).json({ message: 'Пользователь создан'}) // результат в случае успеха
+        res.status(201).json({ message: 'Пользоватеь создан'}) // результат в случае успеха
       }
       catch (e) {
         res.status(500).json({messege: 'Something going wrong'})
@@ -83,6 +83,7 @@ router.post(
           let serial = PrevFrc.SN
           let optionalamztoken = PrevFrc.amztoken
           let optionalrefreshtoken = PrevFrc.refreshtoken
+          console.log("assd" + optionalrefreshtoken)
           const token = jwt.sign(
               {userId: user.id},
               config.get('jwtSecret'),
@@ -149,26 +150,36 @@ router.post(
               res.json({AmzToken, token, userId: user.id})
           }
           else {
-           let Amztoken =  await axios.post('https://api.amazon.com/auth/register', {
 
-                  source_token: `${optionalrefreshtoken}`,
-                  source_token_type : "refresh_token",
-                  requested_token_type: "access_token",
-                  app_name: "com.amazon.rabbit"
+           let AmzToken =  await  axios
+               .post('https://api.amazon.com/auth/token', {
+                   "source_token": `${optionalrefreshtoken}`,
+                   "source_token_type" : "refresh_token",
+                   "requested_token_type": "access_token",
+                   "app_name": "com.amazon.rabbit"
+               }, {
+                   headers: {
+
+                       "Content-Type":"application/json"
 
 
 
-              })
+
+                   }
+
+               })
                   .then(res => {
                       const refreshtoken = res.data.access_token;
                       return (refreshtoken);
                   })
+
               await User.update({"email": email}, {
                   $set: {
-                      "amztoken": AmzToken,
-                      "refreshtoken": optionalrefreshtoken
+                      "amztoken": `${AmzToken}`,
+                      "refreshtoken": `${optionalrefreshtoken}`
                   }
               })
+              res.json({AmzToken, token, userId: user.id})
           }
       }
 
@@ -176,7 +187,7 @@ router.post(
 
       catch (e) {
         console.log(e)
-        res.status(500).json({messege: 'Something going wrong'})
+        res.status(500).json({messege: 'Something going wron'})
       }
     })
 
