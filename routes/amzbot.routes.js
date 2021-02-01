@@ -77,7 +77,7 @@ router.post('/Offer', auth, async (req,res) => {
 
                               })} catch(error){
                               console.log("IA SOSY")
-                              return null , console.log('Ia lox')
+                              return null , console.log('Iasdsad lox')
 
                           }
                           console.log("finall")
