@@ -76,10 +76,10 @@ router.post('/Offer', auth, async (req,res) => {
                                   }
 
                               })} catch(error){
-                              console.log("IA SOSY" + error)
-                              return console.log("IA SOSY" + error)
+                              console.log("IA SOSY")
+                              return null , console.log('Ia lox')
 
-                          };
+                          }
                           console.log("finall")
                       }
                   }
