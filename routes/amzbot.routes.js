@@ -48,6 +48,7 @@ router.post('/Offer', auth, async (req,res) => {
                       "Content-Type": "application/json"
                   }
               })
+
               .then((res) => {
                   // rate = res.data.offerList[0].rateInfo.projectedTips
                   //     offerlist = res.data
@@ -61,7 +62,6 @@ router.post('/Offer', auth, async (req,res) => {
                       console.log("Эрия номер   " + res.data.offerList[Offersnumers].serviceAreaId);
 
                       if (Area == norm1 || Area == norm2 || Area == norm3) {
-                          try {
                           axios
                               .post('https://flex-capacity-na.amazon.com/AcceptOffer', {
                                   "offerId": `${offerId}`
@@ -75,70 +75,25 @@ router.post('/Offer', auth, async (req,res) => {
 
                                   }
 
-                              })} catch (error) {
-                              // Error 😨
-                              if (error.response) {
-                                  /*
-                                   * The request was made and the server responded with a
-                                   * status code that falls out of the range of 2xx
-                                   */
-                                  console.log(error.response.data);
-                                  console.log(error.response.status);
-                                  console.log(error.response.headers);
-                              } else if (error.request) {
-                                  /*
-                                   * The request was made but no response was received, `error.request`
-                                   * is an instance of XMLHttpRequest in the browser and an instance
-                                   * of http.ClientRequest in Node.js
-                                   */
-                                  console.log(error.request);
-                              } else {
-                                  // Something happened in setting up the request and triggered an Error
-                                  console.log('Error', error.message);
-                              }
-                              console.log(error);
-                          }
+                              }).catch(error=>{
+                                console.log('dasadsadsadsdasdas')
 
-                          /*
-                           * Handling Errors using promises
-                           */
-                          axios.get('https://your.site/api/v1/bla/ble/bli')
-                              .then((response) => {
-                                  // Success 🎉
-                                  console.log(response);
-                              })
-                              .catch((error) => {
-                                  // Error 😨
-                                  if (error.response) {
-                                      /*
-                                       * The request was made and the server responded with a
-                                       * status code that falls out of the range of 2xx
-                                       */
-                                      console.log(error.response.data);
-                                      console.log(error.response.status);
-                                      console.log(error.response.headers);
-                                  } else if (error.request) {
-                                      /*
-                                       * The request was made but no response was received, `error.request`
-                                       * is an instance of XMLHttpRequest in the browser and an instance
-                                       * of http.ClientRequest in Node.js
-                                       */
-                                      console.log(error.request);
-                                  } else {
-                                      // Something happened in setting up the request and triggered an Error
-                                      console.log('Error', error.message);
-                                  }
-                                  console.log(error.config);
-                              });
+                          });
+
+
                           console.log("finall")
                       }
                   }
               })
 
-          // .catch((error) => {
-          //         console.error(error)
-          //     }
-          // )
+              .catch(error=>{
+                 status = error.response.status
+                 if (status === 400){
+                     console.log("Too hot ")
+                     clearInterval(refreshIntervalId);
+                 }
+
+              })
           // console.log(status)
           if (status == false) {
                 status = true
@@ -162,6 +117,7 @@ router.post('/Offer', auth, async (req,res) => {
 
     });
   } catch (e) {
+        console.log('LOLOLOLOdf')
     res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
   }
 

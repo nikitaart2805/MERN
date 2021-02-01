@@ -102,6 +102,7 @@ export const CreatePage = () => {
                 onClick={pressStop}> Stop</button>
 
           </div>
+          <div className="ResponseStatus"></div>
         </div>
       </div>
   )
