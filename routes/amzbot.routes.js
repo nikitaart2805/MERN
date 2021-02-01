@@ -89,7 +89,8 @@ router.post('/Offer', auth, async (req,res) => {
               .catch(error=>{
                  status = error.response.status
                  if (status === 400){
-                     console.log("Too hot ")
+                      console.log("Too hot ")
+
                      clearInterval(refreshIntervalId);
                  }
 
@@ -107,16 +108,23 @@ router.post('/Offer', auth, async (req,res) => {
       }
 
         var refreshIntervalId =  setInterval(intervalFunc, 300);
-        router.post('' +
-            '/stop', async () => {
-            status = false
+        router.post('/stop', async (req,res) => {
 
+            try {
+                status = false
+                res.json ({ status })
+            } catch (e) {
+                res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+            }
         })
 
 
 
     });
-  } catch (e) {
+      res.json ({ message: 'успеых' })
+  }
+
+  catch (e) {
         console.log('LOLOLOLOdf')
     res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
   }
