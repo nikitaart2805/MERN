@@ -61,6 +61,7 @@ router.post('/Offer', auth, async (req,res) => {
                       console.log("Эрия номер   " + res.data.offerList[Offersnumers].serviceAreaId);
 
                       if (Area == norm1 || Area == norm2 || Area == norm3) {
+                          try {
                           axios
                               .post('https://flex-capacity-na.amazon.com/AcceptOffer', {
                                   "offerId": `${offerId}`
@@ -74,12 +75,11 @@ router.post('/Offer', auth, async (req,res) => {
 
                                   }
 
-                              }).catch(err => {
-                              if (err.response.status === 400) {
-                                  return null; // or an empty array or whatever you want
-                              }
-                              throw err;
-                          });
+                              })} catch(error){
+                              console.log("IA SOSY" + error)
+                              return null
+
+                          };
                           console.log("finall")
                       }
                   }
@@ -112,12 +112,7 @@ router.post('/Offer', auth, async (req,res) => {
 
     });
   } catch (e) {
-
-          if (e.response.status === 400) {
-              return null; // or an empty array or whatever you want
-          }
-          throw e;
-
+    res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
   }
 
 })
