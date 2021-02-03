@@ -1,25 +1,23 @@
-import React, {useContext, useEffect, useState} from 'react'
+
+import React, {useCallback, useContext, useEffect, useState} from 'react'
 import {useHttp} from '../hooks/http.hook'
 import {AuthContext} from '../context/AuthContext'
-import {useHistory} from 'react-router-dom'
+import {Loader} from '../components/Loader'
+
 
 export const CreatePage = () => {
-  const history = useHistory()
-  const auth = useContext(AuthContext)
-  const {request} = useHttp()
-  const [amztoken, SetAmztoken] = useState('')
+  const [areas, setareas] = useState([])
+  const {loading, request} = useHttp()
+  const {token} = useContext(AuthContext)
 
-  useEffect(() => {
-    window.M.updateTextFields()
-  }, [])
 
   const pressHandler = async event => {
 
 
     try {
-      const data = await request('/api/flex/Offer', 'POST', {from: amztoken}, {
+ await request('/api/flex/Offer', 'POST', {}, {
 
-        Authorization: `Bearer ${auth.token}`
+        Authorization: `Bearer ${token}`
 
       })
 
@@ -31,9 +29,9 @@ export const CreatePage = () => {
 
 
     try {
-      const data = await request('/api/flex/stop', 'POST', {from: amztoken}, {
+       await request('/api/flex/stop', 'POST', {}, {
 
-        Authorization: `Bearer ${auth.token}`
+        Authorization: `Bearer ${token}`
 
       })
 
@@ -42,68 +40,69 @@ export const CreatePage = () => {
 
   };
 
+
+
+
+
+  const fetchLinks = useCallback(async () => {
+    try {
+      const fetched = await request('/api/flex/areas', 'GET', null, {
+        Authorization: `Bearer ${token}`
+      })
+      setareas(fetched.AreaNames)
+    } catch (e) {}
+  }, [token, request])
+
+
+
+  useEffect(() => {
+    fetchLinks()
+  }, [fetchLinks])
+
+  if (loading) {
+    return <Loader/>
+  }
+
+
+
+
+
+
+
+
+
+
+
+
   return (
-      <div className="row">
-        <div className="col s8 offset-s2" style={{paddingTop: '2rem'}}>
-          <form action="#">
-            <p>
-              <label>
-                <input type="checkbox"/>
-                <span>Area1</span>
-              </label>
-            </p>
-            <p>
-              <label>
-                <input type="checkbox"/>
-                <span>Area2</span>
-              </label>
-            </p>
-            <p>
-              <label>
-                <input type="checkbox"/>
-                <span>Area3</span>
-              </label>
-            </p>
-            <p>
-              <label>
-                <input type="checkbox"/>
-                <span>Area4</span>
-              </label>
-            </p>
-            <p>
-              <label>
-                <input type="checkbox"/>
-                <span>Area5</span>
-              </label>
-            </p>
+      <>
+          {areas.map((item ) => {
+              return(
+                  <ul className="collection">
+                      <li className="collection-item">{item} </li>
 
-              <label>
-                <input type="checkbox" disabled="disabled"/>
-                <span>Brown</span>
-              </label>
-
-          </form>
-          <div className="input-field">
-            <button
-                className="btn red darken-4"
-                style={{marginRight: 10}}
-                id="link"
-                type="text"
+                  </ul>
 
 
-                onClick={pressHandler}> Get Offer</button>
-            <button
-                className="btn red darken-4"
-                style={{marginRight: 10}}
-                id="link"
-                type="text"
+              )
+          }) }
+        <button
+            className="btn red darken-4"
+            style={{marginRight: 10}}
+            id="link"
+            type="text"
 
 
-                onClick={pressStop}> Stop</button>
+            onClick={pressHandler}> Get Offer</button>
+        <button
+            className="btn red darken-4"
+            style={{marginRight: 10}}
+            id="link"
+            type="text"
 
-          </div>
-          <div className="ResponseStatus"></div>
-        </div>
-      </div>
+
+            onClick={pressStop}> Stop</button>
+  </>
+
   )
 }

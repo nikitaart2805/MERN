@@ -9,10 +9,29 @@ let norm1 = "22";
 let norm2 = "11be7ee1-1c35-47ed-85b6-376fff6b6966";
 let norm3 = "a1e95b9a-9f11-476d-9af8-41677b64c255";
 let status = true
-async function time () {
+
+router.post('/IDtransfer', auth, async (req,res) => {
+  let UserID = req.user.userId
+
+ User.findById(UserID, async function (err, docs) {
+
+        const email = docs.email
+
+     let SelectedArea =req.body.SelectedAreas
+     let SelectedAreaName =req.body.SelectedAreaName
+
+     await  User.update({"email": email}, {
+         $set: {
+             "SelectedArea": SelectedArea,
+             "SelectedAreaName": SelectedAreaName
+         }
+     })
+     res.status(200).json({message: 'Cool'})
+
+    })
 
 
-}
+})
 
 
 router.post('/Offer', auth, async (req,res) => {
@@ -24,7 +43,8 @@ router.post('/Offer', auth, async (req,res) => {
     User.findById(UserID, function (err, docs) {
         const OurToken = docs.amztoken
         const area   = docs.area
-        console.log(area)
+        const AreaFoeSearching = docs.SelectedArea
+
 
         // console.log(status)
 
@@ -61,7 +81,7 @@ router.post('/Offer', auth, async (req,res) => {
 
                       console.log("Эрия номер   " + res.data.offerList[Offersnumers].serviceAreaId);
 
-                      if (Area == norm1 || Area == norm2 || Area == norm3) {
+                      if (Area == AreaFoeSearching[0] || Area == AreaFoeSearching[2] || Area == Area == AreaFoeSearching[3]) {
                           axios
                               .post('https://flex-capacity-na.amazon.com/AcceptOffer', {
                                   "offerId": `${offerId}`
@@ -81,7 +101,7 @@ router.post('/Offer', auth, async (req,res) => {
                           });
 
 
-                          console.log("finall")
+                          console.log("final")
                       }
                   }
               })
@@ -125,12 +145,36 @@ router.post('/Offer', auth, async (req,res) => {
   }
 
   catch (e) {
-        console.log('LOLOLOLOdf')
+        console.log('LOLOdf')
     res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
   }
 
 })
 
+router.get('/areas', auth, async (req,res) => {
+    UserID = req.user.userId
+
+
+User.findById(UserID, function (err, docs) {
+        const OurToken = docs.amztoken
+    const lolo = docs.areas
+
+
+    let AreaNames =docs.SelectedAreaName
+    // for (var Offersnumers = 0; Offersnumers < 30; Offersnumers++) {
+    //     const areaid = docs.areas[Offersnumers].serviceAreaId
+    //     const areaname = docs.areas[Offersnumers].serviceAreaName
+    //     AreaID.push(areaid)
+    //     AreaNames.push(areaname)
+    //
+    //
+    // }
+
+     res.json({lolo , AreaNames})
+    })
+
+
+    })
 
 
 module.exports = router

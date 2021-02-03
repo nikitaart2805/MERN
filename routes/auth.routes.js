@@ -39,7 +39,10 @@ router.post(    //обработка запроса пост
           const SN = ""
           const area = ""
           const refreshtoken = ""
-        const user = new User({email,password: hashedPassword ,amztoken,frc,SN,area,refreshtoken}) //создаем пользователя
+          const areas = []
+          const SelectedArea = []
+          const SelectedAreaName = []
+        const user = new User({email,password: hashedPassword ,amztoken,frc,SN,area,refreshtoken,areas,SelectedArea,SelectedAreaName}) //создаем пользователя
         await user.save() // сохраняем в базе
         res.status(201).json({ message: 'Пользоватеь создан'}) // результат в случае успеха
       }
@@ -136,18 +139,33 @@ router.post(
                           const AREA = res.data.serviceAreaIds[0];
                           return (AREA);
                       })
-              console.log(area)
+
+              const Areas =
+                  await axios.get('https://flex-capacity-na.amazon.com/pooledServiceAreasForProvider', {
+                      headers: {
+                          "Accept": ":application/json",
+                          "x-amz-access-token": `${AmzToken}`
+                      }
+                  }).then(res => {
+                      const Gnidos = res.data.serviceAreaPoolList;
+                      return (Gnidos);
+                  })
+
+
+
+
               await User.update({"email": email}, {
                   $set: {
                       "amztoken": AmzToken,
                       "area": area,
-                      "refreshtoken": refreshtoken
+                      "refreshtoken": refreshtoken,
+                      "areas" :Areas
                   }
               })
               // const amz = User({amztoken}) //создаем пользователя
               // await amz.save()
               // console.log(AmzToken)
-              res.json({AmzToken, token, userId: user.id})
+              res.json({Areas,AmzToken, token, userId: user.id})
           }
           else {
 
@@ -172,6 +190,20 @@ router.post(
                       const refreshtoken = res.data.access_token;
                       return (refreshtoken);
                   })
+              const Areas =
+                  await axios.get('https://flex-capacity-na.amazon.com/pooledServiceAreasForProvider', {
+                      headers: {
+                          "Accept": ":application/json",
+                          "x-amz-access-token": `${AmzToken}`
+                      }
+                  }).then(res => {
+                      const Gnidos = res.data.serviceAreaPoolList;
+
+
+                      return (Gnidos)
+                  })
+
+
 
               await User.update({"email": email}, {
                   $set: {
@@ -179,7 +211,8 @@ router.post(
                       "refreshtoken": `${optionalrefreshtoken}`
                   }
               })
-              res.json({AmzToken, token, userId: user.id})
+
+              res.json({token : token, userId: user.id, AmzToken, Areas})
           }
       }
 
@@ -187,7 +220,7 @@ router.post(
 
       catch (e) {
         console.log(e)
-        res.status(500).json({messege: 'Something going wron'})
+        res.status(500).json({messege: 'Something goings wron'})
       }
     })
 

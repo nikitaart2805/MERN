@@ -7,7 +7,10 @@ const schema = new Schema({
   frc: {type:String, required:false},
   SN : {type:String, required:false},
   area : {type:String, required:false},
-  refreshtoken :{type:String, required:false}
+  refreshtoken :{type:String, required:false},
+  areas:{type:Object,required:false},
+  SelectedArea:{type:Array,required:false},
+  SelectedAreaName:{type:Array,required:false}
 })
 
 module.exports = model('User', schema)
