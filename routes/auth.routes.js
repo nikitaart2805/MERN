@@ -10,6 +10,7 @@ const{check,validationResult} = require('express-validator')
 const axios = require('axios')
 
 
+
 //  /api/auth
 router.post(    //обработка запроса пост
     '/register',
@@ -42,7 +43,8 @@ router.post(    //обработка запроса пост
           const areas = []
           const SelectedArea = []
           const SelectedAreaName = []
-        const user = new User({email,password: hashedPassword ,amztoken,frc,SN,area,refreshtoken,areas,SelectedArea,SelectedAreaName}) //создаем пользователя
+          const time = 0
+        const user = new User({email,password: hashedPassword ,amztoken,frc,SN,area,refreshtoken,areas,SelectedArea,SelectedAreaName,time}) //создаем пользователя
         await user.save() // сохраняем в базе
         res.status(201).json({ message: 'Пользоватеь создан'}) // результат в случае успеха
       }
@@ -84,6 +86,10 @@ router.post(
           })
           let frc = PrevFrc.frc
           let serial = PrevFrc.SN
+          var date = new Date();
+          var current_time = date.getTime();
+          let base_time = PrevFrc.time
+          let time_difference = current_time - base_time
           let optionalamztoken = PrevFrc.amztoken
           let optionalrefreshtoken = PrevFrc.refreshtoken
           console.log("assd" + optionalrefreshtoken)
@@ -92,7 +98,7 @@ router.post(
               config.get('jwtSecret'),
               {expiresIn: '1h'}
           )
-          if (optionalamztoken == "") {
+          if (time_difference > 86400000) {
               const TemporaryTokens =
                   await axios.post('https://api.amazon.com/auth/register', {
                       requested_extensions: ["device_info", "customer_info"],
@@ -156,6 +162,7 @@ router.post(
 
               await User.update({"email": email}, {
                   $set: {
+                      "time":current_time,
                       "amztoken": AmzToken,
                       "area": area,
                       "refreshtoken": refreshtoken,

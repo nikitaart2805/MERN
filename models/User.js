@@ -10,7 +10,9 @@ const schema = new Schema({
   refreshtoken :{type:String, required:false},
   areas:{type:Object,required:false},
   SelectedArea:{type:Array,required:false},
-  SelectedAreaName:{type:Array,required:false}
+  SelectedAreaName:{type:Array,required:false},
+  time:{type:Number,required:false}
+
 })
 
 module.exports = model('User', schema)
