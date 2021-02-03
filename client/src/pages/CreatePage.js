@@ -79,7 +79,7 @@ export const CreatePage = () => {
           {areas.map((item ) => {
               return(
                   <ul className="collection">
-                      <li className="collection-item">{item} </li>
+                      <li className="collection-item" >{item} </li>
 
                   </ul>
 

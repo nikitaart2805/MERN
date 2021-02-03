@@ -96,12 +96,12 @@ router.post('/Offer', auth, async (req,res) => {
                                   }
 
                               }).catch(error=>{
-                                console.log('dasadsadsadsdasdas')
+                                console.log('MISSED')
 
                           });
 
 
-                          console.log("final")
+                          console.log("finaly")
                       }
                   }
               })
