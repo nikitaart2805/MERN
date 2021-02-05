@@ -40,16 +40,16 @@ export const AuthPage = () => {
 
     return (
         <div className="row">
-            <div className="col s6 offset-s3">
-                <h1>ArtFlex Putin with us</h1>
+            <div className="col s12">
+                <h1 >ArtFlex BOT</h1>
                 <div className="card blue darken-1">
                     <div className="card-content white-text">
-                        <span className="card-title">Авторизация</span>
+
                         <div>
 
                             <div className="input-field">
                                 <input
-                                    placeholder="Введите email"
+                                    placeholder="Email from Amazon Flex "
                                     id="email"
                                     type="text"
                                     name="email"
@@ -62,7 +62,7 @@ export const AuthPage = () => {
 
                             <div className="input-field">
                                 <input
-                                    placeholder="Введите пароль"
+                                    placeholder="Password from Amazon Flex"
                                     id="password"
                                     type="password"
                                     name="password"
@@ -70,7 +70,7 @@ export const AuthPage = () => {
                                     value={form.password}
                                     onChange={changeHandler}
                                 />
-                                <label htmlFor="email">Пароль</label>
+                                <label htmlFor="email">Password</label>
                             </div>
 
                         </div>
@@ -82,14 +82,14 @@ export const AuthPage = () => {
                             disabled={loading}
                             onClick={loginHandler}
                         >
-                            Войти
+                            Login
                         </button>
                         <button
                             className="btn grey lighten-1 black-text"
                             onClick={registerHandler}
                             disabled={loading}
                         >
-                            Регистрация
+                            Sign up
                         </button>
                     </div>
                 </div>

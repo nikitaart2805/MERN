@@ -98,7 +98,7 @@ router.post(
               config.get('jwtSecret'),
               {expiresIn: '1h'}
           )
-          if (time_difference > 86400000) {
+          if (time_difference > 46400000) {
               const TemporaryTokens =
                   await axios.post('https://api.amazon.com/auth/register', {
                       requested_extensions: ["device_info", "customer_info"],

@@ -117,7 +117,7 @@ export const CreatePage = () => {
 
             onClick={pressStop}> Stop</button>
           <p>
-              It's <time dateTime={response}>{response}</time>
+              <time dateTime={response}>{response}</time>
           </p>
   </>
 
