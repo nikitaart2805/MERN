@@ -4,11 +4,36 @@ const User = require('../models/User')
 const auth = require('../middleware/auth.middleware')
 const axios = require('axios')
 const now = require('performance-now')
+var io = require('../app');
 const router = Router()
 let norm1 = "22";
 let norm2 = "11be7ee1-1c35-47ed-85b6-376fff6b6966";
 let norm3 = "a1e95b9a-9f11-476d-9af8-41677b64c255";
 let status = true
+let OfferStatus ="Not searching"
+let interval ;
+
+
+// io.on("connection", (socket) => {
+//     console.log("New client connected");
+//     if (interval) {
+//         clearInterval(interval);
+//     }
+
+//     interval = setInterval(() => getApiAndEmit(socket), 1000);
+//     socket.on("disconnect", () => {
+//         console.log("Client disconnected");
+//         clearInterval(interval);
+//     });
+// });
+//
+// const getApiAndEmit = socket => {
+//     const response = new Date();
+//     // Emitting a new message. Will be consumed by the client
+//     socket.emit("FromAPI", response);
+// };
+
+
 
 router.post('/IDtransfer', auth, async (req,res) => {
   let UserID = req.user.userId
@@ -45,12 +70,14 @@ router.post('/Offer', auth, async (req,res) => {
         const area   = docs.area
         const AreaFoeSearching = docs.SelectedArea
 
+        let Offer_status = "Searching ........."
+        let missed_block = ''
 
         // console.log(status)
 
       function intervalFunc() {
 
-
+          OfferStatus = "Searching started"
           var start = now()
 
           axios
@@ -81,7 +108,7 @@ router.post('/Offer', auth, async (req,res) => {
 
                       console.log("Эрия номер   " + res.data.offerList[Offersnumers].serviceAreaId);
 
-                      if (Area == AreaFoeSearching[0] || Area == AreaFoeSearching[2] || Area == Area == AreaFoeSearching[3]) {
+                      if (Area == AreaFoeSearching[0] || Area == AreaFoeSearching[1] || Area == Area == AreaFoeSearching[2]) {
                           axios
                               .post('https://flex-capacity-na.amazon.com/AcceptOffer', {
                                   "offerId": `${offerId}`
@@ -96,12 +123,12 @@ router.post('/Offer', auth, async (req,res) => {
                                   }
 
                               }).catch(error=>{
-                                console.log('MISSED')
+                              OfferStatus = "we missed block"
 
                           });
 
 
-                          console.log("finaly")
+                          Offer_status = "Accepted"
                       }
                   }
               })
@@ -109,7 +136,7 @@ router.post('/Offer', auth, async (req,res) => {
               .catch(error=>{
                  status = error.response.status
                  if (status === 400){
-                      console.log("Too hot ")
+                     OfferStatus = "Too hot"
 
                      clearInterval(refreshIntervalId);
                  }
@@ -117,6 +144,7 @@ router.post('/Offer', auth, async (req,res) => {
               })
           // console.log(status)
           if (status == false) {
+              OfferStatus ="Not searching"
                 status = true
               clearInterval(refreshIntervalId);
           }
@@ -131,6 +159,7 @@ router.post('/Offer', auth, async (req,res) => {
         router.post('/stop', async (req,res) => {
 
             try {
+
                 status = false
                 res.json ({ status })
             } catch (e) {
@@ -140,8 +169,10 @@ router.post('/Offer', auth, async (req,res) => {
 
 
 
+
+        res.json ({ Offer_status , missed_block})
     });
-      res.json ({ message: 'успеых' })
+
   }
 
   catch (e) {
@@ -150,6 +181,35 @@ router.post('/Offer', auth, async (req,res) => {
   }
 
 })
+
+
+
+
+io.on("connection", (socket) => {
+    console.log("New client connected");
+    if (interval) {
+        clearInterval(interval);
+    }
+    interval = setInterval(() => getApiAndEmit(socket), 1000);
+    socket.on("disconnect", () => {
+        console.log("Client disconnected");
+        clearInterval(interval);
+    });
+});
+
+const getApiAndEmit = socket => {
+
+
+    // Emitting a new message. Will be consumed by the client
+    socket.
+    emit("FromAPI", OfferStatus);
+};
+
+
+
+
+
+
 
 router.get('/areas', auth, async (req,res) => {
     UserID = req.user.userId

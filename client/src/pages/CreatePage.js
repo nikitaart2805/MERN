@@ -3,13 +3,14 @@ import React, {useCallback, useContext, useEffect, useState} from 'react'
 import {useHttp} from '../hooks/http.hook'
 import {AuthContext} from '../context/AuthContext'
 import {Loader} from '../components/Loader'
-
+import socketIOClient from "socket.io-client";
+const ENDPOINT = "http://127.0.0.1:5000";
 
 export const CreatePage = () => {
   const [areas, setareas] = useState([])
+    const [response, setResponse] = useState("");
   const {loading, request} = useHttp()
   const {token} = useContext(AuthContext)
-
 
   const pressHandler = async event => {
 
@@ -53,15 +54,28 @@ export const CreatePage = () => {
     } catch (e) {}
   }, [token, request])
 
+    const fetchStatus = useCallback(async () => {
+        try {
+            const SerchingStatus = await request('/api/flex/Offer', 'GET', null, {
+                Authorization: `Bearer ${token}`
+            })
 
+        } catch (e) {}
+    }, [token, request])
 
   useEffect(() => {
     fetchLinks()
   }, [fetchLinks])
-
+    useEffect(() => {
+        const socket = socketIOClient(ENDPOINT);
+        socket.on("FromAPI", data => {
+            setResponse(data);
+        });
+    }, []);
   if (loading) {
     return <Loader/>
   }
+
 
 
 
@@ -102,6 +116,9 @@ export const CreatePage = () => {
 
 
             onClick={pressStop}> Stop</button>
+          <p>
+              It's <time dateTime={response}>{response}</time>
+          </p>
   </>
 
   )

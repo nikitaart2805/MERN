@@ -2,8 +2,20 @@ const express = require('express')
 const config = require('config')
 const path = require('path')
 const mongoose = require('mongoose')
-
+const socketIo = require("socket.io");
+const http = require("http")
 const app = express()
+const server = http.createServer(app);
+let interval
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    credentials: true
+  }
+} );
+
+module.exports = io;
+
 
 app.use(express.json({ extended: true }))
 
@@ -28,13 +40,15 @@ async function start() {
       useUnifiedTopology: true,
       useCreateIndex: true
     })
-    app.listen(PORT, () => console.log(`App has been started on port ${PORT}...`))
+    server.listen(PORT, () => console.log(`App has been starte on port ${PORT}...`))
   } catch (e) {
 
     console.log('Server Error', e.message)
     // process.exit(1)
   }
 }
-
+module.exports.getIO = function(){
+  return io;
+}
 start()
 
