@@ -101,10 +101,9 @@ console.log(AreaFoeSearching)
                   for (var Offersnumers = 0; Offersnumers < res.data.offerList.length; Offersnumers++) {
                       offerId = res.data.offerList[Offersnumers].offerId;
                       Area = res.data.offerList[Offersnumers].serviceAreaId;
-
                       // console.log("Количество офферов =  " + res.data.offerList.length);
                       // console.log("Номер оффера   " + res.data.offerList[Offersnumers].offerId);
-                      console.log("Выбранные эрии" + AreaFoeSearching);
+
                       console.log("Эрия номер   " + res.data.offerList[Offersnumers].serviceAreaId);
 
                       if (Area == AreaFoeSearching[0] || Area == AreaFoeSearching[1] || Area == AreaFoeSearching[2]) {
@@ -122,7 +121,7 @@ console.log(AreaFoeSearching)
                                   }
 
                               }).catch(error=>{
-                              OfferStatus = "we missed block"
+                              Offer_status = "Missed Block"
 
                           });
 
