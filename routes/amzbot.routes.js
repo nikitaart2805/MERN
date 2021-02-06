@@ -6,9 +6,7 @@ const axios = require('axios')
 const now = require('performance-now')
 var io = require('../app');
 const router = Router()
-let norm1 = "22";
-let norm2 = "11be7ee1-1c35-47ed-85b6-376fff6b6966";
-let norm3 = "a1e95b9a-9f11-476d-9af8-41677b64c255";
+
 let status = true
 let OfferStatus ="Not searching"
 let interval ;
@@ -69,7 +67,7 @@ router.post('/Offer', auth, async (req,res) => {
         const OurToken = docs.amztoken
         const area   = docs.area
         const AreaFoeSearching = docs.SelectedArea
-
+console.log(AreaFoeSearching)
         let Offer_status = "Searching ........."
         let missed_block = ''
 
@@ -103,12 +101,13 @@ router.post('/Offer', auth, async (req,res) => {
                   for (var Offersnumers = 0; Offersnumers < res.data.offerList.length; Offersnumers++) {
                       offerId = res.data.offerList[Offersnumers].offerId;
                       Area = res.data.offerList[Offersnumers].serviceAreaId;
+
                       // console.log("Количество офферов =  " + res.data.offerList.length);
                       // console.log("Номер оффера   " + res.data.offerList[Offersnumers].offerId);
-
+                      console.log("Выбранные эрии" + AreaFoeSearching);
                       console.log("Эрия номер   " + res.data.offerList[Offersnumers].serviceAreaId);
 
-                      if (Area == AreaFoeSearching[0] || Area == AreaFoeSearching[1] || Area == Area == AreaFoeSearching[2]) {
+                      if (Area == AreaFoeSearching[0] || Area == AreaFoeSearching[1] || Area == AreaFoeSearching[2]) {
                           axios
                               .post('https://flex-capacity-na.amazon.com/AcceptOffer', {
                                   "offerId": `${offerId}`
