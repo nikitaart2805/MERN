@@ -122,11 +122,13 @@ console.log(AreaFoeSearching)
 
                               }).catch(error=>{
                               Offer_status = "Missed Block"
+                              console.log(Offer_status)
 
                           });
 
 
                           Offer_status = "Accepted"
+                          console.log(Offer_status)
                       }
                   }
               })
