@@ -3,13 +3,14 @@ const config = require('config')
 const path = require('path')
 const mongoose = require('mongoose')
 const socketIo = require("socket.io");
+const PORT = config.get('port') || 5000
 const http = require("http")
 const app = express()
-const server = http.createServer(app);
-let interval
+const server = http.createServer(app).listen(PORT, () => console.log(`App has been starte on port ${PORT}...`))
+
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://ec2-3-86-29-164.compute-1.amazonaws.com:8080",
     credentials: true
   }
 } );
@@ -31,7 +32,7 @@ if (process.env.NODE_ENV === 'production') {
   })
 }
 
-const PORT = config.get('port') || 5000
+
 
 async function start() {
   try {
@@ -40,7 +41,7 @@ async function start() {
       useUnifiedTopology: true,
       useCreateIndex: true
     })
-    server.listen(PORT, () => console.log(`App has been starte on port ${PORT}...`))
+    server
   } catch (e) {
 
     console.log('Server Error', e.message)

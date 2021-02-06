@@ -2,5 +2,5 @@
   "port": 8080,
   "jwtSecret": "Xyi jui",
   "mongoUri": "mongodb+srv://Mikita:Gomer6723340@flex.shaji.mongodb.net/FLEX?retryWrites=true&w=majority",
-  "baseUrl": "http://localhost:5000"
+  "baseUrl": "http://ec2-3-86-29-164.compute-1.amazonaws.com:8080"
 }
