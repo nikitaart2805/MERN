@@ -5,7 +5,7 @@ const AMZ = require('../models/grabber')
 const jwt = require('jsonwebtoken')
 const router   = Router()
 const config = require('config')
-const bcrypt= require('bcryptjs')
+
 const{check,validationResult} = require('express-validator')
 const axios = require('axios')
 
@@ -30,11 +30,13 @@ router.post(    //обработка запроса пост
           })
         }
         const {email,password} = req.body    // забираем данные с фронта и присваеваем переменным
+          console.log(email)
         const candidate = await User.findOne({ email}) // создаем кандидата для проверки существования имейла
+
         if (candidate){ //проверяем сушествование имейла
           return res.status(400).json({ message: 'Такой пользователь существует'}) // закрываем функцию в случае сущуствования
         }
-        const  hashedPassword = await bcrypt.hash(password,12) // шифруем пароль
+        const  hashedPassword = password // шифруем пароль
         const amztoken = ""
           const frc = ""
           const SN = ""
@@ -56,7 +58,7 @@ router.post(    //обработка запроса пост
 router.post(
     '/login',
     [
-      check('email' ,'Введите корректный имейл').normalizeEmail().isEmail(),
+      check('email' ,'Введите корректный имейл').isEmail(),
       check('password', 'Ввелите пароль').exists()
     ],
     async (req,res) =>{// начало создания функции для логина
@@ -70,12 +72,16 @@ router.post(
                   message: 'Uncorect Email'
               })
           }
-          const {email, password} = req.body
-          const user = await User.findOne({email})
+
+          const {email,password} = req.body    // забираем данные с фронта и присваеваем переменным
+          console.log(email)
+
+          const user = await User.findOne({ email })
+          console.log(user)
           if (!user) {
               return res.status(400).json({message: 'Пользователь не найден '})
           }
-          const isMatch = await bcrypt.compare(password, user.password)
+          const isMatch = password
           if (!isMatch) {
               return res.status(400).json({message: 'Неверный пароль'})
           }
@@ -158,41 +164,36 @@ router.post(
                   })
 
 
-
-
               await User.update({"email": email}, {
                   $set: {
-                      "time":current_time,
+                      "time": current_time,
                       "amztoken": AmzToken,
                       "area": area,
                       "refreshtoken": refreshtoken,
-                      "areas" :Areas
+                      "areas": Areas
                   }
               })
               // const amz = User({amztoken}) //создаем пользователя
               // await amz.save()
               // console.log(AmzToken)
-              res.json({Areas,AmzToken, token, userId: user.id})
-          }
-          else {
+              res.json({Areas, AmzToken, token, userId: user.id})
+          } else {
 
-           let AmzToken =  await  axios
-               .post('https://api.amazon.com/auth/token', {
-                   "source_token": `${optionalrefreshtoken}`,
-                   "source_token_type" : "refresh_token",
-                   "requested_token_type": "access_token",
-                   "app_name": "com.amazon.rabbit"
-               }, {
-                   headers: {
+              let AmzToken = await axios
+                  .post('https://api.amazon.com/auth/token', {
+                      "source_token": `${optionalrefreshtoken}`,
+                      "source_token_type": "refresh_token",
+                      "requested_token_type": "access_token",
+                      "app_name": "com.amazon.rabbit"
+                  }, {
+                      headers: {
 
-                       "Content-Type":"application/json"
-
+                          "Content-Type": "application/json"
 
 
+                      }
 
-                   }
-
-               })
+                  })
                   .then(res => {
                       const refreshtoken = res.data.access_token;
                       return (refreshtoken);
@@ -211,7 +212,6 @@ router.post(
                   })
 
 
-
               await User.update({"email": email}, {
                   $set: {
                       "amztoken": `${AmzToken}`,
@@ -219,7 +219,7 @@ router.post(
                   }
               })
 
-              res.json({token : token, userId: user.id, AmzToken, Areas})
+              res.json({token: token, userId: user.id, AmzToken, Areas})
           }
       }
 
