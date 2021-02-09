@@ -4,7 +4,7 @@ import {useHttp} from '../hooks/http.hook'
 import {AuthContext} from '../context/AuthContext'
 import {Loader} from '../components/Loader'
 import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://ec2-3-86-29-164.compute-1.amazonaws.com:8080";
+const ENDPOINT = "http://ec2-3-93-76-63.compute-1.amazonaws.com:8080";
 
 export const CreatePage = () => {
   const [areas, setareas] = useState([])
