@@ -67,7 +67,7 @@ router.post('/Offer', auth, async (req,res) => {
         const OurToken = docs.amztoken
         const area   = docs.area
         const AreaFoeSearching = docs.SelectedArea
-console.log(AreaFoeSearching)
+
         let Offer_status = "Searching ........."
         let missed_block = ''
 
