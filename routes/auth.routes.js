@@ -109,6 +109,7 @@ router.post(
                   await axios.post('https://api.amazon.com/auth/register', {
                       requested_extensions: ["device_info", "customer_info"],
                       cookies: {
+
                           "website_cookies": [],
                           "domain": ".amazon.com"
                       },
@@ -132,6 +133,15 @@ router.post(
                           "frc": `${frc}`
                       },
                       requested_token_type: ["bearer", "mac_dms", "website_cookies"]
+                  }, {
+                      headers: {
+
+                          "Content-Type": "application/json",
+                          "Accept-Charset":"utf-8",
+                         " x-amzn-identity-auth-domain":"api.amazon.com"
+
+                      }
+
                   })
                       .then(res => {
                           const SignToken = res.data.response.success.tokens.bearer.access_token;
